@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>My Style Guide</title>
+
+    <!-- Site theme -->
+    <style>
+        body {
+            background-color: rgb(100, 120, 150);
+            color:rgb(34, 36, 39);
+            font-family: arial, helvetica, sans-serif;
+            font-size: 16px;
+            margin: 30px;
+            overflow-y: scroll;
+        }
+
+        h1 {
+            font-size: 2em;
+            text-align: center;
+            font-variant: small-caps;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            text-align: center;
+            font-variant: small-caps;
+        }
+
+        h3 {
+            font-size: 1em;
+            text-align: center;
+            font-variant: small-caps;
+        }
+
+        button {
+            font-variant: small-caps;
+            background-color: rgb(168, 184, 207);
+        }
+
+        ul {
+            list-style-type: none;
+        }
+    
+        /* unvisited link */
+        a:link {
+            color: rgb(160, 166, 170);
+        }
+
+        /* visited link */
+        a:visited {
+            color: rgb(7, 69, 80);
+        }
+
+        /* mouse over link */
+        a:hover {
+            color: white;
+        }
+
+        /* selected link */
+        a:active {
+            color: rgb(44, 44, 105);
+        }
+
+        .inputLabel {
+            font-weight: bold;
+        }
+
+        input.inputField {
+            padding: 0px;
+            border: 1px solid black;
+            background-color: rgb(168, 184, 207);
+            color:rgb(34, 36, 39);
+        }
+
+        select {
+            background-color: rgb(168, 184, 207);
+            color:rgb(34, 36, 39);
+        }
+
+        #primary1 {
+            background-color: rgb(18, 45, 119);
+        }
+
+        #primary2 {
+            background-color: rgb(145, 181, 235);
+        }
+
+        #primary3 {
+            background-color: rgb(117, 196, 235);
+        }
+
+        .error {
+            background-color: red;
+            width: 5em;
+            text-align: center;
+            font-variant: small-caps;
+            font-weight: bold;
+            color: white;
+            padding: 5px;
+            border-radius: 15px;
+        }
+
+        .warning {
+            background-color: yellow;
+            width: 5em;
+            text-align: center;
+            font-variant: small-caps;
+            font-weight: bold;
+            color: black;
+            padding: 5px;
+            border-radius: 15px;
+        }
+
+        .success {
+            background-color: green;
+            width: 5em;
+            text-align: center;
+            font-variant: small-caps;
+            font-weight: bold;
+            color: white;
+            padding: 5px;
+            border-radius: 15px;
+        }
+
+        footer {
+            text-align: center;
+            font-variant: small-caps;
+        }
+
+        /* The below is just to make the style page look nice */
+        nav {
+            padding-top: 10px;
+            float: left;
+            text-align: left;
+        }
+
+        nav ul {
+            list-style: disc;
+        }
+
+        main {
+            margin: 0% 25% 0% 25%;
+        }
+
+        .container {
+            float: left;
+            width: 100%;
+            padding: 5px;
+            text-align: center;
+        }
+        /* The above is just to make the style page look nice */
+    </style>
+</head>
+
+<body>
+    <a name="Top"></a>
+    <nav>
+        <ul>
+            <li><a href="#font">Font</a></li>
+            <li><a href="#colorTheme">Color Theme</a></li>
+            <li><a href="#headings">Headings</a></li>
+            <li><a href="#buttons">Buttons</a></li>
+            <li><a href="#formElements">Form Elements</a></li>
+            <li><a href="#messages">Messages</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- About -->
+        <div>
+            <div>
+                <h1><a name="about"></a>My Styles</h1>
+            </div>
+            <p>This page contains specific style guide information for my front end interface.</p>
+        </div>
+        <!-- End About -->
+
+        <!-- Fonts -->
+        <div>
+            <div>
+                <h1><a name="fonts"></a>Font</h1>
+            </div>
+            <p>My application utilizes the arial, helvetica, sans-serif font-family with black text in small caps.</p>
+        </div>
+        <br>
+            <a href="#Top">Back to Top</a>
+        </div>
+        <!-- End Fonts -->
+
+        <!-- Color Theme -->
+        <div>
+            <div>
+                <h1><a name="colorTheme"></a>Color Theme</h1>
+            </div>
+            <p>My application incorporates the below analogous color scheme in its interface.</p>
+            <div class="box" id="primary1"></div>
+            <div class="box" id="primary2"></div>
+            <div class="box" id="primary3"></div>
+        </div>
+        <br>
+            <a href="#Top">Back to Top</a>
+        </div>
+        <!-- End Color Theme -->
+
+        <!-- Headings -->
+        <div>
+            <div>
+                <h1><a name="headings"></a>Headings</h1>
+            </div>
+            <p>The below font sizes and styles are used in the application for various content headings.</p>
+            <h1>Heading 1</h1>
+            <h2>Heading 2</h2>
+            <h3>Heading 3</h3>
+        </div>
+        <br>
+            <a href="#Top">Back to Top</a>
+        </div>
+        <!-- End Headings -->
+
+        <!-- Buttons -->
+        <div>
+            <div>
+                <h1><a name="buttons"></a>Buttons</h1>
+            </div>
+            <p>The application will feature buttons that contain the below color and shape:</p>
+            <button>My Button</button>
+        </div>
+        <br>
+            <a href="#Top">Back to Top</a>
+        </div>
+        <!-- End Buttons -->
+
+        <!-- Form Elements -->
+        <div>
+            <div>
+                <h1><a name="formElements"></a>Form Elements</h1>
+            </div>
+            <p>For the varous forms that the application will contain, it will contain input fields and labels with the below styling:</p>
+            <form>
+                <label for="title" class="inputLabel">Title:</label>
+                <input type="input" id="title" class="inputField" placeholder="Enter Title" value="">
+            </form>
+            <p>It will also contain unordered lists with the below styling:</p>
+            <form>
+                <ul>
+                    <li>Item 1</li>
+                    <li>Item 2</li>
+                    <li>Item 3</li>
+                </ul> 
+            </form>
+            <p>Select lists will have the below styling:</p>
+            <form>
+                <select>
+                    <option value="Item 1">Item 1</option>
+                    <option value="Item 2">Item 2</option>
+                    <option value="Item 3">Item 3</option>
+                </select>
+            </form>
+        </div>
+        <br>
+            <a href="#Top">Back to Top</a>
+        </div>
+        <!-- End Form Elements -->
+
+        <!-- User Messages -->
+        <div>
+            <div>
+                <h1><a name="messages"></a>Messages</h1>
+            </div>
+            <p>Application notifications will be presented to the user as required. The following contextual messages will be used:</p>
+            <p class="error">Error!</p>
+            <p class="warning">Warning!</p>
+            <p class="success">Success!</p>
+        </div>
+        <br>
+            <a href="#Top">Back to Top</a>
+        </div>
+        <!-- End User Messages -->
+    </main>
+
+    <div id="footer">
+        <div class="container">
+            <div class="footer">
+                <p>Copyright My Style Guide</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
