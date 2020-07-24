@@ -1,0 +1,303 @@
+
+/* Set one custom color */
+.geo-custom, .geo-hover-custom:hover {
+  background-color:#647896;
+  color:#fff;
+}
+
+body {
+  color:rgb(34, 36, 39);
+  font-family: arial, helvetica, sans-serif;
+  font-size: 16px;
+  margin: 30px;
+  overflow-y: hidden;
+  background-image: url("./img/background.png");
+  background-repeat: repeat;
+}
+
+h1 {
+  font-size: 3em;
+  text-align: center;
+  font-variant: small-caps;
+}
+
+h2 {
+  font-size: 1.5em;
+  font-variant: small-caps;
+}
+
+h3 {
+  font-size: 1.2em;
+  font-variant: small-caps;
+}
+
+button {
+  font-variant: small-caps;
+  background-color: rgb(168, 184, 207);
+}
+
+button:active {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.addBtn {
+  padding: 10px;
+  width: 25%;
+  background: rgb(168, 184, 207);
+  color: #555;
+  float: left;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0;
+}
+.addBtn:hover {
+  background-color: #bbb;
+}
+/* 
+.close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 12px 16px 12px 16px;
+}
+.close:hover {
+  background-color: #f44336;
+  color: white;
+} */
+
+/* unvisited link */
+a:link {
+  color: rgb(160, 166, 170);
+}
+
+/* visited link */
+a:visited {
+  color: rgb(7, 69, 80);
+}
+
+/* mouse over link */
+a:hover {
+  color: white;
+}
+
+/* selected link */
+a:active {
+  color: rgb(44, 44, 105);
+}
+
+.inputLabel {
+  font-weight: bold;
+}
+
+/* Style the input */
+input {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  width: 75%;
+  padding: 10px;
+  float: left;
+  font-size: 16px;
+  border: 1px solid black;
+  color:rgb(34, 36, 39);
+}
+
+select {
+  background-color: rgb(168, 184, 207);
+  color:rgb(34, 36, 39);
+}
+
+#primary1 {
+  background-color: rgb(18, 45, 119);
+}
+
+#primary2 {
+  background-color: rgb(145, 181, 235);
+}
+
+#primary3 {
+  background-color: rgb(117, 196, 235);
+}
+
+.error {
+  background-color: red;
+  width: 5em;
+  text-align: center;
+  font-variant: small-caps;
+  font-weight: bold;
+  color: white;
+  padding: 5px;
+  border-radius: 15px;
+}
+
+.warning {
+  background-color: yellow;
+  width: 5em;
+  text-align: center;
+  font-variant: small-caps;
+  font-weight: bold;
+  color: black;
+  padding: 5px;
+  border-radius: 15px;
+}
+
+.success {
+  background-color: green;
+  width: 5em;
+  text-align: center;
+  font-variant: small-caps;
+  font-weight: bold;
+  color: white;
+  padding: 5px;
+  border-radius: 15px;
+}
+
+/* Shadowbox header */
+.header {
+  background-color: #647896;
+  padding: 10px 20px;
+  color: white;
+}
+
+/* Clear floats after the header */
+.header:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.shadowbox {
+  width: 100%;
+  border: 1px solid #333;
+  border-radius:10px;
+  box-shadow: 8px 8px 5px #444;
+  padding: 8px 12px;
+}
+
+footer {
+  text-align: center;
+  font-variant: small-caps;
+  position: fixed;
+  left: 10;
+  bottom: 0;
+  width: 85%;
+  background-color: rgb(100, 120, 150);
+  color: white;
+  text-align: center;
+}
+
+/* Remove the border from the editable text */
+[contenteditable] {
+  outline: 0px solid transparent;
+}
+
+/* Mask the user's password on the page */
+#userPassword {
+  -webkit-text-security: disc;
+  -moz-text-security: disc;
+  -ms-text-security: disc;
+}
+
+/* Highlight the editable fields on hover */
+#userPassword:hover, #userName:hover {
+  background-color: #647896;
+  color: white;
+  transition-duration: 1s;
+  cursor: text;
+}
+
+/* Unmask the password on hover */
+#userPassword:hover {
+  -webkit-text-security: none;
+  -moz-text-security: none;
+  -ms-text-security: none;
+}
+
+/* Below code modified from https://stackoverflow.com/questions/41587802/css-animation-from-left-to-right */
+#pointer {
+  position: absolute;
+  animation: linear infinite;
+  animation-name: run;
+  animation-duration: 3s;
+  animation-delay: -.3s
+}
+@keyframes run {
+  /* 0%{ left : 67%;} */
+  20%{ left : 80%;}
+  80%{ left : 13.54%;}
+}
+/* Above code modified from https://stackoverflow.com/questions/41587802/css-animation-from-left-to-right */
+
+
+/* Below code modified from https://www.w3schools.com/howto/howto_css_custom_scrollbar.asp */
+/* width */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #fff;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #647896;
+  border-radius: 10px;
+}
+/* Above code modified from https://www.w3schools.com/howto/howto_css_custom_scrollbar.asp */
+
+
+ul {
+  list-style-type: none;
+  padding:0;
+  margin:0
+}
+ul li {
+  padding:8px 8px;
+  border-bottom:1px solid #ddd;
+}
+ul li:last-child {
+  border-bottom:none
+}
+/* Alternate list item background colors */
+ul li:nth-child(even) {
+  background: #f9f9f9;
+}
+ul li:hover {
+  background-color:#ddd
+}
+
+/* Apparently this is needed for Firefox to show the password masking characters */
+li {
+  display: list-item;
+}
+
+/* Strike out text when clicked */
+ul li.checked {
+  color: #F71955;
+  text-decoration: line-through;
+}
+
+/* Add a "checked" mark when clicked on */
+ul li.checked::before {
+  content: '';
+  position: absolute;
+  border-color: #fff;
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  top: 10px;
+  left: 16px;
+  transform: rotate(45deg);
+  height: 15px;
+  width: 7px;
+}
+
+/* Hide the Admin button (programmatically shown only for me) */
+#AdminButton {
+  display: none;
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Gift Exchange Organizer Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="theme.css">
+    <script type="text/javascript" src="app.js"></script>
+    <link rel='icon' href='./img/favicon.ico' type='image/x-icon' >
+  </head>
+
+  <body onload=initLogin()>
+    <div class="w3-sidebar w3-bar-block geo-custom w3-card" style="width:130px"></div>
+
+    <div style="margin-left:130px">
+      <div class="w3-padding w3-center"><h1 style="text-shadow:1px 1px 0 #777">Gift Exchange Organizer</h1></div>
+
+      <div id="Login" class="w3-container choice w3-animate-opacity w3-margin" style="display:none">
+        <table class="w3-table">
+          <tr>
+            <td style="width: 25%;">
+            </td>
+            <td style="width: 50%;">
+              <input class="w3-input" type="text" id="userEmail" name="userEmail" placeholder="Enter E-Mail Address" required>
+            </td>
+            <td style="width: 25%;">
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 25%;">
+            </td>
+            <td style="width: 50%;">
+              <input class="w3-input" type="password" id="loginPassword" name="loginPassword" placeholder="Enter Password" required>
+              <br><br><br><br>
+            </td>
+            <td style="width: 25%;">
+            </td>
+          </tr>
+        </table>
+        <table class="w3-table">
+          <tr>
+            <td>
+              <!-- <div class="w3-right-align"> -->
+              <div class="w3-center">
+                <button onclick=handleBtnClick(event) onkeypress=handleBtnKeyPress(event) id="LoginButton" title="Login to your account.">Login</button>
+              </div>
+            </td>
+            <!-- <td>
+              <div class="w3-left-align">
+                <button onclick=register() onkeypress=register() id="RegisterAccount" title="Register a new account.">Register</button>
+              </div>
+            </td> -->
+          </tr>
+        </table>
+        <!-- <table class="w3-table w3-center">
+          <tr>
+            <td>
+              <span class="psw">Forgot <a href="#">password?</a></span>
+            </td>
+          </tr>
+        </table> -->
+      </div>
+
+      <div class="copyright">
+        <footer>
+            &copy&nbsp;<script>document.write(new Date().getFullYear());</script> - Randy Dailing
+        </footer>
+    </div>
+    </div>
+  </body>
+</html>

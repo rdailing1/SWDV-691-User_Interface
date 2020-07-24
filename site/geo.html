@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Gift Exchange Organizer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="theme.css">
+    <script type="text/javascript" src="app.js"></script>
+    <link rel='icon' href='./img/favicon.ico' type='image/x-icon' >
+  </head>
+
+  <body onload=initGEO() onmouseover="this.style.cursor='arrow'">
+    <div class="w3-sidebar w3-bar-block geo-custom w3-card" style="width:130px">
+      <h2 class="w3-bar-item">Menu</h2>
+      <button class="w3-bar-item w3-button tablink" id="ProfileButton" onclick="openLink(event, 'Profile')" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >Profile</button>
+      <button class="w3-bar-item w3-button tablink" id="WishlistButton" onclick="openLink(event, 'Wishlist')" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >Wishlist</button>
+      <button class="w3-bar-item w3-button tablink" id="PartnerButton" onclick="openLink(event, 'Partner')" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >Partner</button>
+      <button id="AdminButton" class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Admin')" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >Admin</button>
+    </div>
+
+    <div style="margin-left:130px">
+      <div class="w3-padding w3-center"><h1 style="text-shadow:1px 1px 0 #777">Gift Exchange Organizer</h1></div>
+
+      <!-- Home tab (Landing Page) -->
+      <div id="Home" class="w3-container w3-animate-opacity w3-margin" style="display:none">
+        <table class="w3-table">
+          <tr>
+            <td>
+              <div id="pointer"><img src="./img/pointer.png" alt="Pointer"></div>
+              <br><br><br><br><br><br><br><br><br>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="w3-padding w3-center">
+                <h2>Select an option to get started!</h2>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Profile tab -->
+      <div id="Profile" class="w3-container choice w3-animate-opacity w3-margin" style="display:none" onmouseover="this.style.cursor='default'">
+        <table class="w3-table">
+          <tr>
+            <td style="width: 10%;">
+              <div class="w3-left-align">
+                <p><b>Name:</b></p>
+                <p><b>E-mail:</b></p>
+                <p><b>Password:</b></p>
+              </div>
+            </td>
+            <td>
+              <div class="w3-left-align">
+                <p contenteditable="true" id="userName"></p>
+                <p contenteditable="false" id="userEmail"><script>document.write(sessionStorage.getItem("loginName"));</script></p>
+                <p contenteditable="true" id="userPassword"></p>
+              </div>
+            </td>
+            <td>
+              <div class="w3-right-align">
+                <p><b>Group:</b> 
+                  <select id="Group1Dropdown" onchange="dropdownSwitch('Group1Dropdown')" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"></select>
+                </p>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <hr>
+        <table class="w3-table">
+          <tr>
+            <td>
+              <div class="shadowbox">
+                <div id="myDIV1" class="header">
+                  <h3 style="margin:5px">Parent / Manager</h3>
+                  <input type="text" id="myInput1" placeholder="Name...">
+                  <span onclick="newElement('myInput1', true, '')" class="addBtn">Add</span>
+                </div>
+                  
+                <ul id="myUL1"></ul>
+              </div>
+            </td>
+            <td>
+              <div class="shadowbox">
+                <div id="myDIV2" class="header">
+                  <h3 style="margin:5px">Child / Employee / Spouse</h3>
+                  <input type="text" id="myInput2" placeholder="Name...">
+                  <span onclick="newElement('myInput2', true, '')" class="addBtn">Add</span>
+                </div>
+                  
+                <ul id="myUL2"></ul>
+              </div>
+            </td>
+            <td>
+              <div class="shadowbox">
+                <div id="myDIV3" class="header">
+                  <h3 style="margin:5px">Sibling / Peer / Other</h3>
+                  <input type="text" id="myInput3" placeholder="Name...">
+                  <span onclick="newElement('myInput3', true, '')" class="addBtn">Add</span>
+                </div>
+                
+                <ul id="myUL3"></ul>
+              </div>
+            </td>
+          </tr>
+      </table>
+        <table class="w3-table">
+          <tr>
+            <td>
+              <div class="w3-right-align">
+                <button onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=handleBtnClick(event) onkeypress=handleBtnKeyPress(event) id="ProfileUpdate" title="Update the profile.">Update</button>
+              </div>
+            </td>
+            <td>
+              <div class="w3-left-align">
+                <button onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=handleBtnClick(event) onkeypress=handleBtnKeyPress(event) id="ProfileCancel" title="Cancel the updates." class="cancelbtn">Cancel</button>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Wishlist tab -->
+      <div id="Wishlist" class="w3-container choice w3-animate-opacity w3-margin" style="display:none">
+        <table class="w3-table">
+          <tr>
+            <td style="width: 80%;">
+              <div class="shadowbox">
+                <div id="myDIV4" class="header">
+                  <h3 style="margin:5px">My Wishlist</h3>
+                  <input type="text" id="myInput4" placeholder="Item name, description and/or URL...">
+                  <span onclick="newElement('myInput4', true, '')" class="addBtn">Add</span>
+                </div>
+                  
+                <ul id="myUL4"></ul>
+              </div>
+            </td>
+            <td>
+              <div class="w3-right-align">
+                <p><b>Group:</b> 
+                  <select id="Group2Dropdown" onchange="dropdownSwitch('Group2Dropdown')" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"></select>
+                </p>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <table class="w3-table">
+          <tr>
+            <td>
+              <div class="w3-right-align">
+                <button onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=handleBtnClick(event) onkeypress=handleBtnKeyPress(event) id="WishlistUpdate" title="Update the wishlist.">Update</button>
+              </div>
+            </td>
+            <td>
+              <div class="w3-left-align">
+                <button onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=handleBtnClick(event) onkeypress=handleBtnKeyPress(event) id="WishlistCancel" title="Cancel the updates.">Cancel</button>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Partner tab -->
+      <div id="Partner" class="w3-container choice w3-animate-opacity w3-margin" style="display:none">
+        <table class="w3-table">
+          <tr>
+            <td>
+              <div class="w3-left-align">
+                <p><b>Partner Name:</b> Bruce Wayne</p>
+              </div>
+            </td>
+            <td>
+              <div class="w3-right-align">
+                <p><b>Group:</b> 
+                  <select id="Group3Dropdown" onchange="dropdownSwitch('Group3Dropdown')" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"></select>
+                </p>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <table class="w3-table">
+          <tr>
+            <td>
+              <div class="shadowbox">
+                <div id="myDIV5" class="header">
+                  <h3 style="margin:5px">Wishlist</h3>
+                </div>
+                  
+                <ul id="myUL5"></ul>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <table class="w3-table">
+          <tr>
+            <td>
+              <div class="w3-center">
+                <button onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=handleBtnClick(event) onkeypress=handleBtnKeyPress(event) id="PartnerPick" title="Pick a Partner!">Pick a Partner!</button>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Admin tab (to be finished later, and only visible to me) -->
+      <div id="Admin" class="w3-container choice w3-animate-opacity w3-margin" style="display:none">
+        <h2>TO BE FINISHED LATER</h2>
+        <p>This page is not required for the MVP.</p>
+      </div>
+
+      <!-- Footer with copyright info -->
+      <div class="copyright">
+        <footer>
+            &copy&nbsp;<script>document.write(new Date().getFullYear());</script> - Randy Dailing
+        </footer>
+      </div>
+    </div>
+    <!-- Include the deferred script for creating click events for the list items
+         (necessary since the CSS wasn't applying to all unordered lists) -->
+    <script src="./deferred.js" defer></script>
+  </body>
+</html>
