@@ -11,6 +11,7 @@ var dropDowns = {
     Group2Dropdown : 'Group2Dropdown',
     Group3Dropdown : 'Group3Dropdown'
 };
+var arrWL = [];
 
 
 /*
@@ -50,33 +51,53 @@ function initGEO() {
             populateShadowBoxes();
         }
     };
-    xmlhttp.open("GET", "http://localhost:8081/group/" + sessionStorage.getItem("loginName") , true);
+    xmlhttp.open("GET", "http://localhost:8081/group/" + sessionStorage.getItem("loginName"), false);
     
     xmlhttp.send();
 
     getUserData();
-
-    // Show the landing page
-    document.getElementById('Home').style.display = "block";
-
-    // Skip the landing page (comment the above and uncomment the below)
-    // document.getElementById('ProfileButton').click();
     
     // Show the Admin button, only for me
     if (sessionStorage.getItem("loginName") == "rldail@earthlink.net"){
         document.getElementById("AdminButton").style.display = 'block';
     }
+
+    // Set the text and button state on the Partner page
+    if (arrParentManagerDDL.length == 1) {
+        document.getElementById('partnerLbl').innerText = "You must complete your profile to continue (and be sure to click \"Update\").";
+        document.getElementById('profileLbl').innerText = "There are uncategorized names in this group.";
+        document.getElementById('profileLbl').style.display = "block";
+        document.getElementById('PartnerPick').disabled = true;
+    }
+
+    // Show the landing page
+    document.getElementById('Home').style.display = "block";
+    // Skip the landing page (comment the above and uncomment the below)
+    // document.getElementById('ProfileButton').click();
 }
 
 
 /*
-    Clear and populate the relationship lists and wishlists
+    Determine if the user's profile is complete, which allows the partner algorithm to work
+*/
+function partnerReady(){
+    if (arrParentManagerDDL.length == 1 && arrCESDDL.length == 1 && arrOtherDDL.length == 1) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+
+/*
+    Clear and repopulate the relationship lists and wishlists
 */
 function populateShadowBoxes() {
     // Clear the lists
     var uls = [myUL1, myUL2, myUL3, myUL4, myUL5];
     uls.forEach(function(item) {
-        while( item.firstChild ){
+        while(item.firstChild){
             item.removeChild(item.firstChild);
         }
     });
@@ -114,6 +135,9 @@ function dropdownSwitch(original) {
     }
 
     populateShadowBoxes();
+
+    // Populate the relationship lists
+    relationshipPopulate();
 }
 
 
@@ -159,34 +183,38 @@ function relationshipPopulate() {
                     var related = obj.recordset[i].Related;
                     if (related == "") continue;
 
-                    if (obj.recordset[i].Relationship == 'Parent-Manager') {
-                        newElement("myInput1", false, related);
-                    }
-                    else if (obj.recordset[i].Relationship == 'Child-Employee-Spouse') {
-                        newElement("myInput2", false, related);
-                    }
-                    else if (obj.recordset[i].Relationship == 'Sibling-Peer-Other') {
-                        newElement("myInput3", false, related);
-                    }
-                    else {
-                        if (!arrParentManagerDDL.includes(obj.recordset[i].Related)) {
-                            arrParentManagerDDL.push(related);
-                            ddlPopulate(arrParentManagerDDL, ParentManagerDDL);
-                        }
-                        if (!arrCESDDL.includes(obj.recordset[i].Related)) {
-                            arrCESDDL.push(related);
-                            ddlPopulate(arrCESDDL, CESDDL);
-                        }
-                        if (!arrOtherDDL.includes(obj.recordset[i].Related)) {
-                            arrOtherDDL.push(related);
-                            ddlPopulate(arrOtherDDL, OtherDDL);
-                        }
+                    switch(obj.recordset[i].Relationship) {
+                        case 'Parent-Manager':
+                            newElement("myInput1", false, related);
+                            break;
+                        case 'Child-Employee-Spouse':
+                            newElement("myInput2", false, related);
+                            break;
+                        case 'Sibling-Peer-Other':
+                            newElement("myInput3", false, related);
+                            break;
+                        default:
+                            if (!arrParentManagerDDL.includes(related)) {
+                                arrParentManagerDDL.push(related);
+                                ddlPopulate(arrParentManagerDDL, ParentManagerDDL);
+                            }
+                            if (!arrCESDDL.includes(related)) {
+                                arrCESDDL.push(related);
+                                ddlPopulate(arrCESDDL, CESDDL);
+                            }
+                            if (!arrOtherDDL.includes(related)) {
+                                arrOtherDDL.push(related);
+                                ddlPopulate(arrOtherDDL, OtherDDL);
+                            }
                     }
                 }
+
+                // Set the text and button state on the Profile and Partner pages
+                textSet();
             }
         }
     };
-    xmlhttp.open("GET", "http://localhost:8081/relate/" + sessionStorage.getItem("loginName") + "/\'" + group + '\'', true);
+    xmlhttp.open("GET", "http://localhost:8081/relate/" + sessionStorage.getItem("loginName") + "/\'" + group + '\'', false);
 
     xmlhttp.send();
 }
@@ -200,6 +228,12 @@ function wishlistPopulate() {
     var group = ddl.selectedIndex == -1 ? arrGroups[0] : ddl.options[ddl.selectedIndex].value;
     var obj;
     var xmlhttp = new XMLHttpRequest();
+    
+    // Clear the array
+    arrWL = [];
+
+    // Clear the list
+    while(myUL4.firstChild) myUL4.removeChild(myUL4.firstChild);
 
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -210,11 +244,12 @@ function wishlistPopulate() {
             if (obj.recordset.length > 0) {
                 for (var i = 0; i < obj.recordset.length; i++) {
                     newElement("myInput4", false, obj.recordset[i].Item);
+                    arrWL.push(obj.recordset[i].Item);
                 }
             }
         }
     };
-    xmlhttp.open("GET", "http://localhost:8081/mywl/" + sessionStorage.getItem("loginName") + "/\'" + group + '\'', true);
+    xmlhttp.open("GET", "http://localhost:8081/mywl/" + sessionStorage.getItem("loginName") + "/\'" + group + '\'', false);
     
     xmlhttp.send();
 }
@@ -270,9 +305,9 @@ function profileUpdate() {
                 if (classes.indexOf("checked") >= 0) {
                     var selected = element.innerText;
 
-                    arrParentManagerDDL.push(selected);
-                    arrCESDDL.push(selected);
-                    arrOtherDDL.push(selected);
+                    if (!arrParentManagerDDL.includes(selected)) arrParentManagerDDL.push(selected);
+                    if (!arrCESDDL.includes(selected)) arrCESDDL.push(selected);
+                    if (!arrOtherDDL.includes(selected)) arrOtherDDL.push(selected);
 
                     // Remove the list item and decrement the counter to account for the smaller list
                     element.remove();
@@ -305,11 +340,69 @@ function profileUpdate() {
             }
         }
     });
+    
+    // Set the text and button state on the Profile and Partner pages
+    textSet();
 
     // Repopulate the dropdown lists
     ddlPopulate(arrParentManagerDDL, ParentManagerDDL);
     ddlPopulate(arrCESDDL, CESDDL);
     ddlPopulate(arrOtherDDL, OtherDDL);
+
+    namePWDUpdate();
+}
+
+
+/*
+    Update the name and password in the UserProfile table
+*/
+function namePWDUpdate() {
+    var arr1;
+    var arr2;
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = xmlhttp.responseText;
+
+            arr1 = response.split(":[");
+            arr2 = arr1[2].split("]");
+            if (arr2[0] == "0") {
+                document.getElementById('profileLbl').innerText = "The changes were not saved.  Please try again.";
+                document.getElementById('profileLbl').className = "error";
+            }
+        }
+    };
+    
+    // Change the style so we can pick up the actual password
+    document.getElementById('userPassword').style = "-webkit-text-security: none";
+
+    xmlhttp.open("PUT", "http://localhost:8081/UserUpdate/" + sessionStorage.getItem("loginName") + "/" + document.getElementById('userName').innerText  + '/' + document.getElementById('userPassword').innerText, false);
+
+    xmlhttp.send();
+
+    // Change the style back
+    document.getElementById('userPassword').style = "-webkit-text-security: disc";
+}
+
+
+/*
+    Set the text and button state on the Profile and Partner pages
+*/
+function textSet() {
+    if (!partnerReady()) {
+        document.getElementById('partnerLbl').innerText = "You must complete your profile to continue (and be sure to click \"Update\").";
+        document.getElementById('profileLbl').innerText = "There are uncategorized names in this group.";
+        document.getElementById('profileLbl').className = "error";
+        document.getElementById('profileLbl').style.display = "block";
+        document.getElementById('PartnerPick').disabled = true;
+    }
+    else {
+        document.getElementById('partnerLbl').innerText = "";
+        document.getElementById('profileLbl').innerText = "";
+        document.getElementById('profileLbl').style.display = "none";
+        document.getElementById('PartnerPick').disabled = false;
+    }
 }
 
 
@@ -318,27 +411,82 @@ function profileUpdate() {
 */
 function WishlistUpdate() {
     var ul4Items = document.getElementById("myUL4").getElementsByTagName("li");
+    var group = Group2Dropdown.selectedIndex == -1 ? arrGroups[0] : Group2Dropdown.options[Group2Dropdown.selectedIndex].value;
+    var xmlhttp = new XMLHttpRequest();
+    var arr = [];
 
     if (ul4Items.length > 0) {
-        for (var i = 0; i < ul4Items.length; ++i) {
+        // Update the unordered list
+        for (var i = 0; i < ul4Items.length; i++) {
             var element = ul4Items[i];
             var classes = element.className.split(" ");
     
             if (classes.indexOf("checked") >= 0) {
+                arr.push(element.innerText);
+
+                // Remove the item from the wishlist array
+                arrWL.forEach(function(item) {
+                    if (item.includes(element.innerText)) {
+                        for (var i = 0; i < item.length; i++){
+                            if (item[i] == element.innerText) {
+                                item.splice(i, 1);
+                            }
+                        }
+                    }
+                });
+
                 // Remove the list item
                 element.remove();
+                i--;
             }
+        }
+    }
+
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = xmlhttp.responseText;
+
+            arr1 = response.split(":[");
+            arr2 = arr1[2].split("]");
+            if (arr2[0] == "0") {
+                document.getElementById('wlLbl').innerText = "The changes were not saved.  Please try again.";
+                document.getElementById('wlLbl').className = "error";
+                document.getElementById('wlLbl').style.display = "block";
+            }
+            else {
+                document.getElementById('wlLbl').innerText = "";
+                document.getElementById('wlLbl').style.display = "none";
+            }
+        }
+    };
+    
+    // Remove items from the wishlist for this user/group (if required)
+    if (arr.length > 0) {
+        arr.forEach(function(item) {
+            xmlhttp.open("POST", "http://localhost:8081/wlDelete/" + sessionStorage.getItem("loginName") + "/\'" + group + "\'/" + item, false);
+            xmlhttp.send();
+        });
+    }
+
+    // Add the items in the unordered list to the wishlist table for this user/group (if required)
+    for (var i = 0; i < ul4Items.length; i++) {
+        if (arrWL.length == 0 || !arrWL.includes(ul4Items[i].innerText)) {
+            xmlhttp.open("POST", "http://localhost:8081/wlInsert/" + sessionStorage.getItem("loginName") + "/\'" + group + "\'/\'" + ul4Items[i].innerText + "\'", false);
+            xmlhttp.send();
         }
     }
 }
 
 
 /*
-    Handle dropdown list item selection
+    Handle relationship dropdown list item selection
 */
 function selectionAdd(ddl, arr) {
     var myDDL = document.getElementById(ddl);
     var list = myDDL.childNodes;
+
+    document.getElementById('profileLbl').innerText = "There are unsaved changes on this tab.";
+    document.getElementById('profileLbl').className = "warning";
 
     // Get the value (innerHTML) of the selected item
     var selected = list[myDDL.selectedIndex].innerHTML;
@@ -437,7 +585,7 @@ function login() {
             }
         }
     };
-    xmlhttp.open("GET", "http://localhost:8081/UserLogin/" + userEmail + "/" + userPassword, true);
+    xmlhttp.open("GET", "http://localhost:8081/UserLogin/" + userEmail + "/" + userPassword, false);
     
     xmlhttp.send();
 }
@@ -463,7 +611,7 @@ function getUserData() {
                 }
             }
         };
-        xmlhttp.open("GET", "http://localhost:8081/UserData/" + sessionStorage.getItem("loginName"), true);
+        xmlhttp.open("GET", "http://localhost:8081/UserData/" + sessionStorage.getItem("loginName"), false);
         
         xmlhttp.send(); 
     }
@@ -491,14 +639,14 @@ function handleBtnKeyPress(event) {
 
 function handleEvent(event) {
     if (event.target.id == 'ProfileCancel') {
-        location.reload();
+        getUserData();
+        populateShadowBoxes();
     }
     else if (event.target.id == 'ProfileUpdate') {
         profileUpdate();
     }
     else if (event.target.id == 'WishlistCancel') {
-        location.reload();
-        // document.getElementById('WishlistButton').click();
+        wishlistPopulate();
     }
     else if (event.target.id == 'WishlistUpdate') {
         WishlistUpdate();

@@ -3,7 +3,7 @@
   <head>
     <title>Gift Exchange Organizer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Include the W3Schools style sheet -->
+    <!-- Include the W3Schools style sheet for the animations (among other things) -->
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <!-- Include my style sheet -->
     <link rel="stylesheet" href="theme.css">
@@ -14,10 +14,10 @@
   <body onload=initGEO() onmouseover="this.style.cursor='arrow'">
     <div class="w3-sidebar w3-bar-block geo-custom" style="width:130px">
       <h2 class="w3-bar-item">Menu</h2>
-      <button class="w3-bar-item w3-button tablink" id="ProfileButton" onclick="openLink(event, 'Profile')">Profile</button>
-      <button class="w3-bar-item w3-button tablink" id="WishlistButton" onclick="openLink(event, 'Wishlist')">Wishlist</button>
-      <button class="w3-bar-item w3-button tablink" id="PartnerButton" onclick="openLink(event, 'Partner')">Partner</button>
-      <button class="w3-bar-item w3-button tablink" id="AdminButton" onclick="openLink(event, 'Admin')">Admin</button>
+      <button class="w3-bar-item w3-button tablink" id="ProfileButton" onclick="openLink(event, 'Profile')" title="Categorize relationships and update your name and password.">Profile</button>
+      <button class="w3-bar-item w3-button tablink" id="WishlistButton" onclick="openLink(event, 'Wishlist')" title="Maintain your wishlist (group dependent).">Wishlist</button>
+      <button class="w3-bar-item w3-button tablink" id="PartnerButton" onclick="openLink(event, 'Partner')" title="Pick a partner and view/print his/her wishlist.">Partner</button>
+      <button class="w3-bar-item w3-button tablink" id="AdminButton" onclick="openLink(event, 'Admin')" title="Create users, create and populate groups.">Admin</button>
     </div>
 
     <div style="margin-left:130px">
@@ -53,19 +53,22 @@
                 <p><b>Password:</b></p>
               </div>
             </td>
-            <td>
+            <td style="width: 20%;">
               <div class="w3-left-align">
-                <p contenteditable="true" id="userName"></p>
+                <p contenteditable="true" id="userName" title="Edit your name."></p>
                 <p contenteditable="false" id="userEmail"><script>document.write(sessionStorage.getItem("loginName"));</script></p>
-                <p contenteditable="true" id="userPassword"></p>
+                <p contenteditable="true" id="userPassword" title="Edit your password."></p>
               </div>
+            </td>
+            <td style="width: 30%;">
             </td>
             <td>
               <div class="w3-right-align">
                 <p><b>Group:</b> 
-                  <select id="Group1Dropdown" onchange="dropdownSwitch('Group1Dropdown')" ></select>
+                  <select id="Group1Dropdown" onchange="dropdownSwitch('Group1Dropdown')" title="Choose your group."></select>
                 </p>
               </div>
+              <div class="error w3-center" id="profileLbl" style="display:none"></div>
             </td>
           </tr>
         </table>
@@ -76,30 +79,30 @@
               <div class="shadowbox">
                 <div id="myDIV1" class="header">
                   <h3>Parent / Manager</h3>
-                  <select style = "width: 100%;" id="ParentManagerDDL" onchange="selectionAdd('ParentManagerDDL', arrParentManagerDDL)"></select>
+                  <select style = "width: 100%;" id="ParentManagerDDL" onchange="selectionAdd('ParentManagerDDL', arrParentManagerDDL)" title="Categorize the names."></select>
                 </div>
                   
-                <ul id="myUL1"></ul>
+                <ul id="myUL1" title="Click to mark/unmark for removal from the list."></ul>
               </div>
             </td>
             <td style = "width: 20%;">
               <div class="shadowbox">
                 <div id="myDIV2" class="header">
                   <h3>Child / Employee / Spouse</h3>
-                  <select style = "width: 100%;" id="CESDDL" onchange="selectionAdd('CESDDL', arrCESDDL)"></select>
+                  <select style = "width: 100%;" id="CESDDL" onchange="selectionAdd('CESDDL', arrCESDDL)" title="Categorize the names."></select>
                 </div>
                   
-                <ul id="myUL2"></ul>
+                <ul id="myUL2" title="Click to mark/unmark for removal from the list."></ul>
               </div>
             </td>
             <td style = "width: 20%;">
               <div class="shadowbox">
                 <div id="myDIV3" class="header">
                   <h3>Sibling / Peer / Other</h3>
-                  <select style = "width: 100%;" id="OtherDDL" onchange="selectionAdd('OtherDDL', arrOtherDDL)"></select>
+                  <select style = "width: 100%;" id="OtherDDL" onchange="selectionAdd('OtherDDL', arrOtherDDL)" title="Categorize the names."></select>
                 </div>
                 
-                <ul id="myUL3"></ul>
+                <ul id="myUL3" title="Click to mark/unmark for removal from the list."></ul>
               </div>
             </td>
           </tr>
@@ -132,16 +135,17 @@
                   <span onclick="newElement('myInput4', true, '')" class="addBtn">Add</span>
                 </div>
                   
-                <ul id="myUL4"></ul>
+                <ul id="myUL4" title="Click to mark/unmark for removal from the list."></ul>
               </div>
             </td>
             <td>
               <div class="w3-right-align">
                 <p><b>Group:</b> 
-                  <select id="Group2Dropdown" onchange="dropdownSwitch('Group2Dropdown')"></select>
+                  <select id="Group2Dropdown" onchange="dropdownSwitch('Group2Dropdown')" title="Choose your group."></select>
                 </p>
               </div>
             </td>
+            <div class="error w3-center" id="wlLbl" style="display:none"></div>
           </tr>
         </table>
         <table class="w3-table">
@@ -172,7 +176,7 @@
             <td>
               <div class="w3-right-align">
                 <p><b>Group:</b> 
-                  <select id="Group3Dropdown" onchange="dropdownSwitch('Group3Dropdown')"></select>
+                  <select id="Group3Dropdown" onchange="dropdownSwitch('Group3Dropdown')" title="Choose your group."></select>
                 </p>
               </div>
             </td>
@@ -195,6 +199,7 @@
           <tr>
             <td>
               <div class="w3-center">
+                <p id="partnerLbl"></p>
                 <button onclick=handleBtnClick(event) onkeypress=handleBtnKeyPress(event) id="PartnerPick" title="Pick a Partner!">Pick a Partner!</button>
               </div>
             </td>
