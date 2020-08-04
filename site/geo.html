@@ -8,7 +8,7 @@
     <!-- Include my style sheet -->
     <link rel="stylesheet" href="theme.css">
     <script type="text/javascript" src="app.js"></script>
-    <link rel='icon' href='./img/favicon.ico' type='image/x-icon' >
+    <link rel='icon' href='./img/favicon.ico' type='image/x-icon'>
   </head>
 
   <body onload=initGEO() onmouseover="this.style.cursor='arrow'">
@@ -21,7 +21,7 @@
     </div>
 
     <div style="margin-left:130px">
-      <div class="w3-padding w3-center"><h1 style="text-shadow:1px 1px 0 #777">Gift Exchange Organizer</h1></div>
+      <div class="w3-padding w3-center"><h1>Gift Exchange Organizer</h1></div>
 
       <!-- Home tab (Landing Page) -->
       <div id="Home" class="w3-container w3-animate-opacity w3-margin" style="display:none">
@@ -57,7 +57,9 @@
               <div class="w3-left-align">
                 <p contenteditable="true" id="userName" title="Edit your name."></p>
                 <p contenteditable="false" id="userEmail"><script>document.write(sessionStorage.getItem("loginName"));</script></p>
-                <p contenteditable="true" id="userPassword" title="Edit your password."></p>
+                <!-- mouseover/mouseout event handlers added in addition to css styles to handle events after the initial page creation
+                     (the mask has to be removed when uploading to SQL, then added again afterward - this aids in that working correctly) -->
+                <p contenteditable="true" id="userPassword" title="Edit your password." onmouseover="this.style='-webkit-text-security: none; -moz-text-security: none; -ms-text-security: none;'" onmouseout="this.style='-webkit-text-security: disc; -moz-text-security: disc; -ms-text-security: disc;'"></p>
               </div>
             </td>
             <td style="width: 30%;">
@@ -127,7 +129,7 @@
       <div id="Wishlist" class="w3-container choice w3-animate-opacity w3-margin" style="display:none">
         <table class="w3-table">
           <tr>
-            <td style="width: 80%;">
+            <td style="width: 75%;">
               <div class="shadowbox">
                 <div id="myDIV4" class="header">
                   <h3>My Wishlist</h3>
@@ -170,7 +172,7 @@
           <tr>
             <td>
               <div class="w3-left-align">
-                <p><b>Partner Name:</b> Bruce Wayne</p>
+                <p id="partnerName"></p>
               </div>
             </td>
             <td>
@@ -190,7 +192,7 @@
                   <h3>Wishlist</h3>
                 </div>
                   
-                <ul id="myUL5"></ul>
+                <div id="myUL5" title="Click to mark/unmark as purchased, double-click to open or search."></div>
               </div>
             </td>
           </tr>

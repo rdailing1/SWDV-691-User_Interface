@@ -6,12 +6,12 @@ var arrParentManagerDDL = [""];
 var arrCESDDL = [""];
 var arrOtherDDL = [""];
 var arrGroups = [];
+var arrWL = [];
 var dropDowns = {
     Group1Dropdown : 'Group1Dropdown',
     Group2Dropdown : 'Group2Dropdown',
     Group3Dropdown : 'Group3Dropdown'
 };
-var arrWL = [];
 
 
 /*
@@ -31,6 +31,9 @@ function initGEO() {
     var obj;
     var select;
     var xmlhttp = new XMLHttpRequest();
+    
+    // Reduce the title size
+    document.getElementsByTagName("h1")[0].style.fontSize = "3em";
 
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -51,7 +54,7 @@ function initGEO() {
             populateShadowBoxes();
         }
     };
-    xmlhttp.open("GET", "http://localhost:8081/group/" + sessionStorage.getItem("loginName"), false);
+    xmlhttp.open("GET", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/group/" + sessionStorage.getItem("loginName"), false);
     
     xmlhttp.send();
 
@@ -63,7 +66,7 @@ function initGEO() {
     }
 
     // Set the text and button state on the Partner page
-    if (arrParentManagerDDL.length == 1) {
+    if (arrParentManagerDDL.length > 1) {
         document.getElementById('partnerLbl').innerText = "You must complete your profile to continue (and be sure to click \"Update\").";
         document.getElementById('profileLbl').innerText = "There are uncategorized names in this group.";
         document.getElementById('profileLbl').style.display = "block";
@@ -74,6 +77,54 @@ function initGEO() {
     document.getElementById('Home').style.display = "block";
     // Skip the landing page (comment the above and uncomment the below)
     // document.getElementById('ProfileButton').click();
+
+    // Add event listeners to the two editable fields on the Profile page
+    document.getElementById("userName").addEventListener("input", function() {
+        unsavedWarning('profileLbl');
+    }, false);
+    
+    document.getElementById("userPassword").addEventListener("input", function() {
+        unsavedWarning('profileLbl');
+    }, false);
+    
+    // Add a click event listener to the list items on the Partner page
+    document.getElementById("myUL5").addEventListener("click", function(e) {
+        if (e.target.tagName === 'LI') {
+            if (e.target.value == 0) {
+                e.target.style = "color: #F71955; text-decoration: line-through;";
+                e.target.value = 1;
+            }
+            else {
+                e.target.style = "color: rgb(34, 36, 39); text-decoration: none;";
+                e.target.value = 0;
+            }
+        }
+    }, false);
+    
+    // Add a dblclick event listener to the list items on the Partner page
+    document.getElementById("myUL5").addEventListener("dblclick", function(e) {
+        if (e.target.tagName === 'LI') {
+            // If the list item is a hyperlink, open it; otherwise search for the item on Google
+            if (e.target.innerText.includes("www.", 0)) {
+                window.open(e.target.innerText);
+            }
+            else {
+                window.open('https://www.google.com/search?q=' + e.target.innerText)
+            }
+        }
+    }, false);
+
+    getMatchName();
+}
+
+
+/*
+    Show unsaved changes warning
+*/
+function unsavedWarning(label) {
+    document.getElementById(label).innerText = "There are unsaved changes on this tab.";
+    document.getElementById(label).className = "warning";
+    document.getElementById(label).style.display = "block";
 }
 
 
@@ -138,6 +189,8 @@ function dropdownSwitch(original) {
 
     // Populate the relationship lists
     relationshipPopulate();
+
+    getMatchName();
 }
 
 
@@ -214,7 +267,7 @@ function relationshipPopulate() {
             }
         }
     };
-    xmlhttp.open("GET", "http://localhost:8081/relate/" + sessionStorage.getItem("loginName") + "/\'" + group + '\'', false);
+    xmlhttp.open("GET", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/relate/" + sessionStorage.getItem("loginName") + "/\'" + group + '\'', false);
 
     xmlhttp.send();
 }
@@ -228,12 +281,14 @@ function wishlistPopulate() {
     var group = ddl.selectedIndex == -1 ? arrGroups[0] : ddl.options[ddl.selectedIndex].value;
     var obj;
     var xmlhttp = new XMLHttpRequest();
+    var match = false;
     
     // Clear the array
     arrWL = [];
 
-    // Clear the list
+    // Clear the lists
     while(myUL4.firstChild) myUL4.removeChild(myUL4.firstChild);
+    while(myUL4.firstChild) myUL5.removeChild(myUL5.firstChild);
 
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -243,13 +298,27 @@ function wishlistPopulate() {
 
             if (obj.recordset.length > 0) {
                 for (var i = 0; i < obj.recordset.length; i++) {
-                    newElement("myInput4", false, obj.recordset[i].Item);
-                    arrWL.push(obj.recordset[i].Item);
+                    if (match) {
+                        var li = document.createElement("li");
+                        var t = document.createTextNode(obj.recordset[i].Item);
+                        li.appendChild(t);
+                        document.getElementById('myUL5').appendChild(li);
+                    }
+                    else {
+                        newElement("myInput4", false, obj.recordset[i].Item);
+                        arrWL.push(obj.recordset[i].Item);
+                    }
                 }
             }
         }
     };
-    xmlhttp.open("GET", "http://localhost:8081/mywl/" + sessionStorage.getItem("loginName") + "/\'" + group + '\'', false);
+    xmlhttp.open("GET", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/mywl/" + sessionStorage.getItem("loginName") + "/\'" + group + '\'', false);
+    
+    xmlhttp.send();
+
+    match = true;
+     
+    xmlhttp.open("GET", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/mywl/" + document.getElementById("partnerName").value + "/\'" + group + '\'', false);
     
     xmlhttp.send();
 }
@@ -281,7 +350,10 @@ function newElement(myInput, fromWeb, inputValue) {
     } else {
         document.getElementById(myUL).appendChild(li);
     }
-    if (myInput == 'myInput4') document.getElementById(myInput).value = "";
+    if (myInput == 'myInput4') {
+        document.getElementById(myInput).value = "";
+        document.getElementById(myInput).focus();
+    }
 }
 
 
@@ -350,6 +422,52 @@ function profileUpdate() {
     ddlPopulate(arrOtherDDL, OtherDDL);
 
     namePWDUpdate();
+    relationshipUpdate();
+}
+
+
+/*
+    Update the name and password in the UserProfile table
+*/
+function relationshipUpdate() {
+    var arr1;
+    var arr2;
+    var group = Group2Dropdown.selectedIndex == -1 ? arrGroups[0] : Group2Dropdown.options[Group2Dropdown.selectedIndex].value;
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = xmlhttp.responseText;
+
+            arr1 = response.split(":[");
+            arr2 = arr1[2].split("]");
+            if (arr2[0] == "0") {
+                document.getElementById('profileLbl').innerText = "The changes were not saved.  Please try again.";
+                document.getElementById('profileLbl').className = "error";
+            }
+        }
+    };
+
+    // go through the array and update each one (the arrays are equal so only need to do one)
+    for (var i = 0; i < arrParentManagerDDL.length; i++){
+        if (arrParentManagerDDL[i] == "") continue;
+        xmlhttp.open("PUT", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/RelationshipUpdate/" + sessionStorage.getItem("loginName") + "/\'" + group  + "\'/\'" + arrParentManagerDDL[i] + "\'", false);
+
+        xmlhttp.send();
+    }
+    
+    // go through the ul and update each one
+    var myUL = ['myUL1', 'myUL2', 'myUL3'];
+    myUL.forEach(function(item) {
+        var ulItems = document.getElementById(item).getElementsByTagName("li");
+
+        relationship = item == 'myUL1' ? 'Parent-Manager' : item == 'myUL2' ? 'Child-Employee-Spouse' : 'Sibling-Peer-Other';
+        for (var i = 0; i < ulItems.length; i++) {
+            xmlhttp.open("PUT", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/RelationshipUpdate/" + sessionStorage.getItem("loginName") + "/\'" + group  + "\'/\'" + ulItems[i].innerText + "\'/" + relationship, false);
+
+            xmlhttp.send();
+        }
+    });
 }
 
 
@@ -375,14 +493,14 @@ function namePWDUpdate() {
     };
     
     // Change the style so we can pick up the actual password
-    document.getElementById('userPassword').style = "-webkit-text-security: none";
+    document.getElementById('userPassword').style = "-webkit-text-security: none; -moz-text-security: none; -ms-text-security: none;";
 
-    xmlhttp.open("PUT", "http://localhost:8081/UserUpdate/" + sessionStorage.getItem("loginName") + "/" + document.getElementById('userName').innerText  + '/' + document.getElementById('userPassword').innerText, false);
+    xmlhttp.open("PUT", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/UserUpdate/" + sessionStorage.getItem("loginName") + "/" + document.getElementById('userName').innerText  + '/' + document.getElementById('userPassword').innerText, false);
 
     xmlhttp.send();
 
     // Change the style back
-    document.getElementById('userPassword').style = "-webkit-text-security: disc";
+    document.getElementById('userPassword').style = "-webkit-text-security: disc; -moz-text-security: disc; -ms-text-security: disc;";
 }
 
 
@@ -390,19 +508,21 @@ function namePWDUpdate() {
     Set the text and button state on the Profile and Partner pages
 */
 function textSet() {
+    getMatchName();
+
     if (!partnerReady()) {
         document.getElementById('partnerLbl').innerText = "You must complete your profile to continue (and be sure to click \"Update\").";
         document.getElementById('profileLbl').innerText = "There are uncategorized names in this group.";
         document.getElementById('profileLbl').className = "error";
         document.getElementById('profileLbl').style.display = "block";
-        document.getElementById('PartnerPick').disabled = true;
     }
     else {
         document.getElementById('partnerLbl').innerText = "";
         document.getElementById('profileLbl').innerText = "";
         document.getElementById('profileLbl').style.display = "none";
-        document.getElementById('PartnerPick').disabled = false;
     }
+
+    document.getElementById('PartnerPick').disabled = document.getElementById("partnerName").value == "" ? false : true;
 }
 
 
@@ -435,7 +555,7 @@ function WishlistUpdate() {
                     }
                 });
 
-                // Remove the list item
+                // Remove the list item and decrement the counter to account for the smaller list
                 element.remove();
                 i--;
             }
@@ -463,7 +583,7 @@ function WishlistUpdate() {
     // Remove items from the wishlist for this user/group (if required)
     if (arr.length > 0) {
         arr.forEach(function(item) {
-            xmlhttp.open("POST", "http://localhost:8081/wlDelete/" + sessionStorage.getItem("loginName") + "/\'" + group + "\'/" + item, false);
+            xmlhttp.open("POST", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/wlDelete/" + sessionStorage.getItem("loginName") + "/\'" + group + "\'/" + item, false);
             xmlhttp.send();
         });
     }
@@ -471,7 +591,7 @@ function WishlistUpdate() {
     // Add the items in the unordered list to the wishlist table for this user/group (if required)
     for (var i = 0; i < ul4Items.length; i++) {
         if (arrWL.length == 0 || !arrWL.includes(ul4Items[i].innerText)) {
-            xmlhttp.open("POST", "http://localhost:8081/wlInsert/" + sessionStorage.getItem("loginName") + "/\'" + group + "\'/\'" + ul4Items[i].innerText + "\'", false);
+            xmlhttp.open("POST", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/wlInsert/" + sessionStorage.getItem("loginName") + "/\'" + group + "\'/\'" + ul4Items[i].innerText + "\'", false);
             xmlhttp.send();
         }
     }
@@ -485,8 +605,7 @@ function selectionAdd(ddl, arr) {
     var myDDL = document.getElementById(ddl);
     var list = myDDL.childNodes;
 
-    document.getElementById('profileLbl').innerText = "There are unsaved changes on this tab.";
-    document.getElementById('profileLbl').className = "warning";
+    unsavedWarning('profileLbl');
 
     // Get the value (innerHTML) of the selected item
     var selected = list[myDDL.selectedIndex].innerHTML;
@@ -585,7 +704,7 @@ function login() {
             }
         }
     };
-    xmlhttp.open("GET", "http://localhost:8081/UserLogin/" + userEmail + "/" + userPassword, false);
+    xmlhttp.open("GET", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/UserLogin/" + userEmail + "/" + userPassword, false);
     
     xmlhttp.send();
 }
@@ -611,13 +730,71 @@ function getUserData() {
                 }
             }
         };
-        xmlhttp.open("GET", "http://localhost:8081/UserData/" + sessionStorage.getItem("loginName"), false);
+        xmlhttp.open("GET", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/UserData/" + sessionStorage.getItem("loginName"), false);
         
         xmlhttp.send(); 
     }
     catch(err) {
         alert(err.message)
     }
+}
+
+
+/*
+    Get match name for user/group
+*/
+function getMatchName() {
+    var obj;
+    var group = Group2Dropdown.selectedIndex == -1 ? arrGroups[0] : Group2Dropdown.options[Group2Dropdown.selectedIndex].value;
+    var xmlhttp = new XMLHttpRequest();
+
+    try {
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var response = xmlhttp.responseText;
+
+                obj = JSON.parse(response);
+
+                if (response == '{"recordsets":[[]],"recordset":[],"output":{},"rowsAffected":[0]}') {
+                    document.getElementById("partnerName").innerHTML = "<b>Partner Name:</b> N/A";
+                    document.getElementById("partnerName").value = "";
+                }
+                else {
+                    document.getElementById("partnerName").innerHTML = "<b>Partner Name:</b> " + obj.recordset[0].MatchName;
+                    document.getElementById("partnerName").value = getPartnerEmail(obj.recordset[0].MatchName);
+                }
+            }
+        };
+        xmlhttp.open("GET", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/matchname/" + sessionStorage.getItem("loginName") + "/\'" + group + "\'", false);
+        
+        xmlhttp.send(); 
+    }
+    catch(err) {
+        alert(err.message)
+    }
+}
+
+
+/*
+    Get the partner's email address
+*/
+function getPartnerEmail(name) {
+    var obj;
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = xmlhttp.responseText;
+
+            obj = JSON.parse(response);
+        }
+    };
+
+    xmlhttp.open("GET", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/PartnerEmail/\'" + name + "\'", false);
+        
+    xmlhttp.send();
+
+    return obj.recordset[0].Email;
 }
 
 
