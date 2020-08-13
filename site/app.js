@@ -318,9 +318,11 @@ function wishlistPopulate() {
 
     match = true;
      
-    xmlhttp.open("GET", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/mywl/" + document.getElementById("partnerName").value + "/\'" + group + '\'', false);
-    
-    xmlhttp.send();
+    try {
+        xmlhttp.open("GET", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/mywl/" + document.getElementById("partnerName").value + "/\'" + group + '\'', false);
+        
+        xmlhttp.send();
+    } catch {}
 }
 
 
@@ -337,7 +339,7 @@ function newElement(myInput, fromWeb, inputValue) {
     for (var i = 0; i < ulItems.length; ++i) {
         if (ulItems[i].innerText == inputValue) {
             if (fromWeb) alert("Cannot insert duplicate values!");
-            document.getElementById(myInput).value = "";
+            // document.getElementById(myInput).value = "";
             return;
         }
     }
@@ -529,7 +531,7 @@ function textSet() {
 /*
     Update the user's wishlist
 */
-function WishlistUpdate() {
+function wishlistUpdate() {
     var ul4Items = document.getElementById("myUL4").getElementsByTagName("li");
     var group = Group2Dropdown.selectedIndex == -1 ? arrGroups[0] : Group2Dropdown.options[Group2Dropdown.selectedIndex].value;
     var xmlhttp = new XMLHttpRequest();
@@ -799,6 +801,106 @@ function getPartnerEmail(name) {
 
 
 /*
+    Pick a partner
+*/
+function partnerPick() {
+    var arr = [];
+    var arrMatched = [];
+    var arrRelated1 = [];
+    var arrRelated2 = [];
+    var obj;
+    var group = Group2Dropdown.selectedIndex == -1 ? arrGroups[0] : Group2Dropdown.options[Group2Dropdown.selectedIndex].value;
+    var xmlhttp = new XMLHttpRequest();
+    var index = 0;
+
+    // Get the related names, add to two arrays; the second is just in case the first one can't provide a match
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = xmlhttp.responseText;
+
+            obj = JSON.parse(response);
+
+            if (obj.recordset.length > 0) {
+                for (var i = 0; i < obj.recordset.length; i++) {
+                    var related = obj.recordset[i].Related;
+                    if (related == "") continue;
+
+                    switch(obj.recordset[i].Relationship) {
+                        case 'Parent-Manager':
+                            arrRelated2.push(related);
+                            break;
+                        default:
+                            arrRelated1.push(related);
+                    }
+                }
+            }
+        }
+    };
+    xmlhttp.open("GET", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/relate/" + sessionStorage.getItem("loginName") + "/\'" + group + '\'', false);
+
+    xmlhttp.send();
+
+    // Get the names of people who are already matched
+    try {
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var response = xmlhttp.responseText;
+
+                obj = JSON.parse(response);
+
+                if (response != '{"recordsets":[[]],"recordset":[],"output":{},"rowsAffected":[0]}') {
+                    obj.recordset.forEach(function(item) {
+                        if (!arrMatched.includes(item.MatchName)) arrMatched.push(item.MatchName);
+                    });
+                }
+            }
+        };
+        xmlhttp.open("GET", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/matched/\'" + group + "\'", false);
+        
+        xmlhttp.send(); 
+    }
+    catch(err) {
+        alert(err.message)
+    }
+
+    // Build an array of possible matches
+    arrRelated1.forEach(function(item) {
+        if (!arrMatched.includes(item)) {
+            arr.push(item);
+        }
+    });
+
+    // If necessary, build the array of possible matches again, using the backup array
+    if (arr.length == 0) {
+        arrRelated2.forEach(function(item) {
+            if (!arrMatched.includes(item)) {
+                arr.push(item);
+            }
+        });
+    }
+
+    // Stop if there still aren't any possibilities
+    if (arr.length == 0) {
+        alert("No match found!");
+
+        return;
+    }
+
+    // Generate a random integer between 0 and the length of the array of possible matches
+    index = Math.floor(Math.random() * arr.length);
+
+    // Insert the name into the db
+    xmlhttp.open("POST", "http://ec2-54-166-214-152.compute-1.amazonaws.com:8081/matchInsert/" + sessionStorage.getItem("loginName") + "/\'" + group + "\'/\'" + arr[index] + "\'", false);
+    xmlhttp.send();
+
+    // Hit the function that pulls and shows the match name and his/her wishlist
+    getMatchName();
+
+    document.getElementById('PartnerPick').disabled = true;
+}
+
+
+/*
     Handle button clicks and presses
 */
 function handleBtnClick(event) {
@@ -826,9 +928,12 @@ function handleEvent(event) {
         wishlistPopulate();
     }
     else if (event.target.id == 'WishlistUpdate') {
-        WishlistUpdate();
+        wishlistUpdate();
     }
     else if (event.target.id == 'LoginButton') {
         login();
+    }
+    else if (event.target.id == 'PartnerPick') {
+        partnerPick();
     }
 }
